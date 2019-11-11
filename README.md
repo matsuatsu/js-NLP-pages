@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # js-nlp-pages
 
 ## Project setup
@@ -27,3 +28,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# js-NLP-pages
+>>>>>>> 81845b8b586da479344a878f80f2aa9c21bf99d9
