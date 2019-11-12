@@ -26,9 +26,27 @@
     </v-app-bar>
     <v-content>
       <v-container>
-        <v-textarea v-model="inputText"></v-textarea>
+        <label>{{builder_status}}</label>
+        <v-textarea label="ここに文章を入力" v-model="inputText"></v-textarea>
         <v-btn @click="conv">変換</v-btn>
-        <p>outputToken is: {{ outputToken }}</p>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">表層系</th>
+                <th class="text-left">基本形</th>
+                <th class="text-left">品詞</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item,index) in outputToken" :key="index">
+                <td>{{ item.surface_form }}</td>
+                <td>{{ item.basic_form }}</td>
+                <td>{{ item.pos }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
       </v-container>
     </v-content>
   </v-app>
@@ -42,7 +60,8 @@ export default {
     return {
       inputText: "形態素解析される文字列",
       outputToken: [],
-      builder: kuromoji.builder({ dicPath: "/dict" })
+      builder: "",
+      builder_status: false
     };
   },
   methods: {
@@ -59,6 +78,10 @@ export default {
         }
       );
     }
+  },
+  mounted: function() {
+    this.builder = kuromoji.builder({ dicPath: "/dict" });
+    this.builder_status = true;
   }
 };
 </script>
