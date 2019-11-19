@@ -10,15 +10,6 @@
           transition="scale-transition"
           width="40"
         />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
       </div>
       <h1>js-NLP-pages</h1>
 
@@ -26,23 +17,18 @@
     </v-app-bar>
     <v-content>
       <v-container>
-        <label>{{builder_status}}</label>
         <v-textarea label="ここに文章を入力" v-model="inputText"></v-textarea>
         <v-btn @click="conv">変換</v-btn>
         <v-simple-table>
           <template v-slot:default>
             <thead>
               <tr>
-                <th class="text-left">表層系</th>
-                <th class="text-left">基本形</th>
-                <th class="text-left">品詞</th>
+                <th class="text-left">形態素</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item,index) in outputToken" :key="index">
-                <td>{{ item.surface_form }}</td>
-                <td>{{ item.basic_form }}</td>
-                <td>{{ item.pos }}</td>
+              <tr v-for="(item, index) in outputToken" :key="index">
+                <td>{{ item }}</td>
               </tr>
             </tbody>
           </template>
@@ -53,35 +39,38 @@
 </template>
 
 <script>
-import kuromoji from "kuromoji";
+/* eslint-disable no-console */
+import TinySegmenter from "tiny-segmenter";
+
 export default {
   name: "App",
   data() {
     return {
-      inputText: "形態素解析される文字列",
+      inputText: "",
       outputToken: [],
-      builder: "",
-      builder_status: false
+      segmenter: ""
     };
   },
   methods: {
     conv: async function() {
-      var vm = this;
-      this.builder.build(
-        await function(err, tokenizer) {
-          if (err) {
-            throw err;
-          } else {
-            var token = tokenizer.tokenize(vm.inputText);
-            vm.outputToken = token;
-          }
-        }
-      );
+      let segs = this.segmenter.segment(this.inputText);
+      this.outputToken = segs;
+
+      // var vm = this;
+      // this.builder.build(
+      //   await function(err, tokenizer) {
+      //     if (err) {
+      //       throw err;
+      //     } else {
+      //       var token = tokenizer.tokenize(vm.inputText);
+      //       vm.outputToken = token;
+      //     }
+      //   }
+      // );
     }
   },
   mounted: function() {
-    this.builder = kuromoji.builder({ dicPath: "/dict" });
-    this.builder_status = true;
+    this.segmenter = new TinySegmenter();
   }
 };
 </script>
